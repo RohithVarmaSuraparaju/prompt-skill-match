@@ -1,73 +1,30 @@
-# Welcome to your Lovable project
+# 🧠 Prompt Skill Match — AI Resume Analyzer  
 
-## Project info
+Live App: https://prompt-skill-match.vercel.app/  
+GitHub Repo: https://github.com/RohithVarmaSuraparaju/prompt-skill-match  
 
-**URL**: https://lovable.dev/projects/ff8bd131-920a-4ba7-ae94-ade3662e9ed5
+---
 
-## How can I edit this code?
+## 🚀 About the Project  
+Prompt Skill Match is an AI-powered web app that compares your resume with a job description to highlight missing keywords, important skills, and ATS-related improvements. It helps job seekers optimize resumes for better alignment with job postings.  
 
-There are several ways of editing your application.
+Built using React, TypeScript, Vite, and Tailwind CSS, this project delivers a fast and responsive experience with a sleek modern UI.  
 
-**Use Lovable**
+---
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/ff8bd131-920a-4ba7-ae94-ade3662e9ed5) and start prompting.
+## 🧩 Features  
+- Paste or upload resume and job description text  
+- Extract and match important skills & keywords  
+- Highlights missing keywords for better ATS performance  
+- Optional AI-generated suggestions for improvement  
+- Responsive UI built with Tailwind + shadcn/ui   
 
-Changes made via Lovable will be committed automatically to this repo.
+---
 
-**Use your preferred IDE**
+## 🛠️ Tech Stack  
+- Frontend: React + TypeScript  
+- Styling: Tailwind CSS + shadcn/ui  
+- Build Tool: Vite   
+- Deployment: Vercel  
+- Version Control: GitHub  
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/ff8bd131-920a-4ba7-ae94-ade3662e9ed5) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
