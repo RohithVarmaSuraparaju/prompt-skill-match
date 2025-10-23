@@ -5,7 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, FileText, Briefcase, CheckCircle2, XCircle, Lightbulb } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Loader2, FileText, Briefcase, CheckCircle2, XCircle, Lightbulb, Upload, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -22,6 +23,66 @@ const Index = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isGeneratingSuggestions, setIsGeneratingSuggestions] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadedFilePath, setUploadedFilePath] = useState<string | null>(null);
+
+  const handleFileUpload = async (file: File) => {
+    if (!file) return;
+
+    const allowedTypes = [
+      "application/pdf",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "text/plain",
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+      toast.error("Please upload a PDF, DOCX, or TXT file");
+      return;
+    }
+
+    setIsUploading(true);
+    setResumeFile(file);
+
+    try {
+      // Upload to Supabase Storage
+      const fileName = `${Date.now()}-${file.name}`;
+      const { error: uploadError } = await supabase.storage
+        .from("resumes")
+        .upload(fileName, file);
+
+      if (uploadError) throw uploadError;
+
+      setUploadedFilePath(fileName);
+      toast.success("Resume uploaded successfully!");
+
+      // Extract text from the uploaded file
+      const { data, error } = await supabase.functions.invoke("parse-resume", {
+        body: { filePath: fileName },
+      });
+
+      if (error) throw error;
+
+      setResume(data.text);
+      toast.success("Resume parsed successfully!");
+    } catch (error: any) {
+      console.error("Upload error:", error);
+      toast.error(error.message || "Failed to upload resume");
+      setResumeFile(null);
+      setUploadedFilePath(null);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleRemoveFile = async () => {
+    if (uploadedFilePath) {
+      await supabase.storage.from("resumes").remove([uploadedFilePath]);
+    }
+    setResumeFile(null);
+    setUploadedFilePath(null);
+    setResume("");
+  };
 
   const handleAnalyze = async () => {
     if (!resume.trim() || !jobDescription.trim()) {
@@ -92,14 +153,61 @@ const Index = () => {
                 <FileText className="h-5 w-5 text-primary" />
                 Resume
               </CardTitle>
-              <CardDescription>Paste your resume text here</CardDescription>
+              <CardDescription>Upload a document or paste text</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="resume-upload">Upload Resume (PDF, DOCX, TXT)</Label>
+                {!resumeFile ? (
+                  <div className="relative">
+                    <Input
+                      id="resume-upload"
+                      type="file"
+                      accept=".pdf,.docx,.txt"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) handleFileUpload(file);
+                      }}
+                      disabled={isUploading}
+                      className="cursor-pointer"
+                    />
+                    {isUploading && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-background/80">
+                        <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 p-3 bg-success/10 border border-success/20 rounded-lg">
+                    <FileText className="h-4 w-4 text-success" />
+                    <span className="text-sm flex-1 truncate">{resumeFile.name}</span>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={handleRemoveFile}
+                      className="h-7 w-7 p-0"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                )}
+              </div>
+              
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-background px-2 text-muted-foreground">Or paste text</span>
+                </div>
+              </div>
+
               <Textarea
                 placeholder="Paste your resume content here..."
                 value={resume}
                 onChange={(e) => setResume(e.target.value)}
-                className="min-h-[300px] resize-none"
+                disabled={isUploading}
+                className="min-h-[200px] resize-none"
               />
             </CardContent>
           </Card>
